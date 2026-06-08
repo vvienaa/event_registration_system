@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Панель организатора{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📊 Управление командами</h2>
+    <div class="d-flex gap-2">
+        <a href="/export/excel" class="btn btn-success">
+            📎 Экспорт в Excel
+        </a>
+        <a href="/admin/logout" class="btn btn-danger">
+            🚪 Выход
+        </a>
+    </div>
+</div>
+
+<!-- Статистика -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h1 class="display-4">{{ total_teams }}</h1>
+                <p class="mb-0">Всего команд</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h1 class="display-4">{{ total_participants }}</h1>
+                <p class="mb-0">Всего участников</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h1 class="display-4">{{ teams|length }}</h1>
+                <p class="mb-0">Активных команд</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Таблица команд -->
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">📋 Список зарегистрированных команд</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Название команды</th>
+                        <th>Капитан</th>
+                        <th>Email</th>
+                        <th>Участников</th>
+                        <th>Учебное заведение</th>
+                        <th>Дата регистрации</th>
+                        <th>QR-код</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in teams %}
+                    <tr>
+                        <td>{{ team.id }}</td>
+                        <td><strong>{{ team.team_name }}</strong></td>
+                        <td>{{ team.captain_name }}</td>
+                        <td>{{ team.captain_email }}</td>
+                        <td class="text-center">{{ team.participant_count }}</td>
+                        <td>{{ team.institution or "—" }}</td>
+                        <td>{{ team.created_at.strftime("%d.%m.%Y %H:%M") if team.created_at else "—" }}</td>
+                        <td>
+                            {% if team.qr_code_path %}
+                           <a href="/download-qr/{{ team.id }}" class="btn btn-sm btn-outline-primary">
+    📷 Смотреть
+</a>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% if teams|length == 0 %}
+<div class="alert alert-info text-center mt-4">
+    Пока нет зарегистрированных команд. Станьте первым!
+</div>
+{% endif %}
+
+{% endblock %}

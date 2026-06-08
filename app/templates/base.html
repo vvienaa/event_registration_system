@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CodeStorage - Регистрация мероприятий{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+       <a class="navbar-brand" href="/">
+    🏢 ООО «CodeStorage» | Регистрация мероприятий
+</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">📝 Регистрация</a>
+                <a class="nav-link" href="/admin">🔐 Организаторам</a>
+                <a class="nav-link" href="/scan">📷 Проверка QR</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="container mt-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Подвал -->
+    <div class="footer">
+        <div class="container">
+            <p class="text-muted">
+                © 2026 ООО «CodeStorage»<br>
+           
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

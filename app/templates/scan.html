@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Проверка QR-кодов{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-shadow">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0">📷 Сканирование QR-кода</h4>
+            </div>
+            <div class="card-body text-center">
+                
+                <!-- Форма загрузки -->
+                <div id="scanForm">
+                    <div class="mb-4">
+                        <div class="display-1">🎫</div>
+                        <p class="text-muted">Загрузите QR-код участника для проверки</p>
+                        <p class="small text-warning">Сфотографируйте QR-код или загрузите изображение</p>
+                    </div>
+                    
+                    <input type="file" id="qrFile" accept="image/*" class="form-control mb-3">
+                    <button onclick="checkQR()" class="btn btn-primary btn-lg w-100">
+                        🔍 Проверить QR-код
+                    </button>
+                </div>
+                
+                <!-- Результат проверки -->
+                <div id="resultArea" style="display: none;">
+                    <div id="resultCard" class="card">
+                        <div class="card-body">
+                            <h3 id="resultStatus"></h3>
+                            <div id="resultDetails"></div>
+                            <button onclick="resetScan()" class="btn btn-secondary mt-3">
+                                📷 Сканировать снова
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Инструкция -->
+        <div class="card mt-3 bg-light">
+            <div class="card-body">
+                <h6>📌 Инструкция для администратора на входе:</h6>
+                <ol class="small mb-0">
+                    <li>Попросите участника показать QR-код (на телефоне или бумажный)</li>
+                    <li>Нажмите «Выбрать файл» и загрузите фото QR-кода</li>
+                    <li>Система покажет: <span class="text-success">ДОПУЩЕН</span> или <span class="text-danger">ОТКАЗАНО</span></li>
+                    <li>При успешной проверке — пропустите команду</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function checkQR() {
+    const fileInput = document.getElementById('qrFile');
+    if (!fileInput.files.length) {
+        alert('❌ Пожалуйста, выберите QR-код для проверки');
+        return;
+    }
+    
+    // Показываем индикатор загрузки
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    
+    document.getElementById('scanForm').style.display = 'none';
+    document.getElementById('resultArea').style.display = 'block';
+    
+    const resultCard = document.getElementById('resultCard');
+    const resultStatus = document.getElementById('resultStatus');
+    const resultDetails = document.getElementById('resultDetails');
+    
+    resultStatus.innerHTML = '⏳ Проверка...';
+    resultCard.className = 'card';
+    resultDetails.innerHTML = '';
+    
+    try {
+        const response = await fetch('/verify-qr', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            resultCard.className = 'card border-success';
+            resultStatus.innerHTML = '✅ ' + result.message;
+            resultStatus.className = 'text-success';
+            resultDetails.innerHTML = `
+                <hr>
+                <div class="text-start">
+                    <p><strong>🏷️ Команда:</strong> ${result.team_name}</p>
+                    <p><strong>👤 Капитан:</strong> ${result.captain_name}</p>
+                    <p><strong>👥 Участников:</strong> ${result.participant_count}</p>
+                </div>
+                <div class="alert alert-success mt-2">
+                    🎉 Добро пожаловать на мероприятие!
+                </div>
+            `;
+        } else {
+            resultCard.className = 'card border-danger';
+            resultStatus.innerHTML = '❌ ' + result.message;
+            resultStatus.className = 'text-danger';
+            resultDetails.innerHTML = `
+                <hr>
+                <div class="alert alert-danger">
+                    ⚠️ Доступ запрещён.<br>
+                    Пожалуйста, обратитесь к организаторам.
+                </div>
+            `;
+        }
+    } catch (error) {
+        resultCard.className = 'card border-danger';
+        resultStatus.innerHTML = '❌ Ошибка';
+        resultStatus.className = 'text-danger';
+        resultDetails.innerHTML = `
+            <div class="alert alert-danger">
+                Не удалось проверить QR-код. Попробуйте ещё раз.
+            </div>
+        `;
+    }
+}
+
+function resetScan() {
+    document.getElementById('scanForm').style.display = 'block';
+    document.getElementById('resultArea').style.display = 'none';
+    document.getElementById('qrFile').value = '';
+}
+</script>
+{% endblock %}

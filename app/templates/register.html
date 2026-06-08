@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Регистрация команды{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card card-shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">📝 Регистрация команды на мероприятие</h4>
+            </div>
+            <div class="card-body">
+                
+                {% if error %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ error }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <form method="POST" action="/register">
+                    <div class="mb-3">
+                        <label for="team_name" class="form-label">🏷️ Название команды <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="team_name" name="team_name" required 
+                               placeholder="Например: Code Masters">
+                        <small class="text-muted">Уникальное название вашей команды</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="captain_name" class="form-label">👤 ФИО капитана <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="captain_name" name="captain_name" required
+                               placeholder="Иванов Иван Иванович">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="captain_email" class="form-label">📧 Email капитана <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="captain_email" name="captain_email" required
+                               placeholder="ivanov@example.com">
+                        <small class="text-muted">На этот адрес придёт QR-код для входа</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="participant_count" class="form-label">👥 Количество участников <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="participant_count" name="participant_count" 
+                               min="1" max="20" value="1" required>
+                        <small class="text-muted">От 1 до 20 человек</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="institution" class="form-label">🏫 Учебное заведение (опционально)</label>
+                        <input type="text" class="form-control" id="institution" name="institution"
+                               placeholder="Уренский индустриально-энергетический техникум">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        🎫 Зарегистрировать команду
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3 bg-light">
+            <div class="card-body">
+                <h6>ℹ️ Что произойдёт после регистрации?</h6>
+                <ol class="small mb-0">
+                    <li>Вы получите QR-код на указанную почту</li>
+                    <li>Распечатайте или сохраните QR-код на телефон</li>
+                    <li>Покажите QR-код на входе организаторам</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
